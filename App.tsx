@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Poll, PollStatus } from './types';
@@ -11,13 +10,14 @@ import { Whitepaper } from './views/Whitepaper';
 import { Manifesto } from './views/Manifesto';
 import { Technology } from './views/Technology';
 import { DebugFHE } from './views/DebugFHE';
+import { Profile } from './views/Profile';
 import { useAccount, useWalletClient } from 'wagmi';
 import { BrowserProvider } from 'ethers';
 import { getPollCount, getPollFromContract } from './services/contractService';
 
 const INITIAL_POLLS: Poll[] = [];
 
-type AppView = 'landing' | 'dashboard' | 'create' | 'vote' | 'results' | 'whitepaper' | 'manifesto' | 'technology' | 'debug';
+type AppView = 'landing' | 'dashboard' | 'create' | 'vote' | 'results' | 'whitepaper' | 'manifesto' | 'technology' | 'debug' | 'profile';
 
 export default function App() {
   const [view, setView] = useState<AppView>('landing');
@@ -142,6 +142,7 @@ export default function App() {
           </div>
           <div className="flex items-center gap-8">
             <div className="hidden lg:flex gap-6 text-[10px] font-black uppercase tracking-[0.2em] opacity-60">
+              <button onClick={() => switchView('profile')} className="hover:text-action transition-all">Profile</button>
               <button onClick={() => switchView('technology')} className="hover:text-action transition-all">Technology</button>
               <button onClick={() => switchView('manifesto')} className="hover:text-action transition-all">Manifesto</button>
               <button onClick={() => switchView('whitepaper')} className="hover:text-action transition-all">Whitepaper</button>
@@ -201,6 +202,7 @@ export default function App() {
         {view === 'manifesto' && <Manifesto onBack={() => switchView('landing')} />}
         {view === 'technology' && <Technology onBack={() => switchView('landing')} />}
         {view === 'debug' && <DebugFHE onBack={() => switchView('dashboard')} />}
+        {view === 'profile' && <Profile polls={polls} onViewPoll={handleViewPoll} onBack={() => switchView('dashboard')} />}
       </main>
 
       {view !== 'landing' && (
