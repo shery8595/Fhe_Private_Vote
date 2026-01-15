@@ -257,6 +257,20 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
           </p>
         </header>
 
+        {/* Poll Image */}
+        {poll.imageUrl && (
+          <div className="-mx-8 md:-mx-12 -mt-4 mb-8">
+            <img
+              src={poll.imageUrl}
+              alt={poll.question}
+              className="w-full h-64 object-cover rounded-2xl"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          </div>
+        )}
+
         <div className="space-y-3">
           <p className="text-xs font-black uppercase tracking-widest text-primary/40 mb-2">Select your option</p>
           {poll.options.map((option, idx) => (
