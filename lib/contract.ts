@@ -1,7 +1,7 @@
 // Contract configuration
 export const CONTRACT_CONFIG = {
-    // Deployed contract with Chainlink Automation + Token-Gating
-    address: '0x744d70e58B9eE0D3e09372c0BB33e1C332A05B4c' as const,
+    // Deployed contract with Chainlink Automation + Token-Gating + Images
+    address: '0xe1905D9235E20d6aA0Cbf7E672565fe3f72A729c' as const,
 
     // Arbitrum Sepolia chain ID
     chainId: 421614,
@@ -24,7 +24,8 @@ export const CONTRACT_ABI = [
             { "internalType": "uint256", "name": "_durationInMinutes", "type": "uint256" },
             { "internalType": "string[]", "name": "_optionLabels", "type": "string[]" },
             { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-            { "internalType": "uint256", "name": "_minimumTokenBalance", "type": "uint256" }
+            { "internalType": "uint256", "name": "_minimumTokenBalance", "type": "uint256" },
+            { "internalType": "string", "name": "_imageUrl", "type": "string" }
         ],
         "name": "createPoll",
         "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -104,7 +105,8 @@ export const CONTRACT_ABI = [
             { "internalType": "uint256", "name": "totalVoteCount", "type": "uint256" },
             { "internalType": "string[]", "name": "optionLabels", "type": "string[]" },
             { "internalType": "address", "name": "tokenAddress", "type": "address" },
-            { "internalType": "uint256", "name": "minimumTokenBalance", "type": "uint256" }
+            { "internalType": "uint256", "name": "minimumTokenBalance", "type": "uint256" },
+            { "internalType": "string", "name": "imageUrl", "type": "string" }
         ],
         "stateMutability": "view",
         "type": "function"
