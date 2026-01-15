@@ -54,41 +54,40 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
     checkVoteStatus();
   }, [isConnected, address, walletClient, poll.id]);
 
-  // Initialize CoFHE when wallet is connected
-  useEffect(() => {
-    const initCofhe = async () => {
-      if (isConnected && walletClient && !cofheInitialized && !cofheInitializing) {
-        setCofheInitializing(true);
-        setInitProgress(10);
+  // Initialize CoFHE only when voting (lazy initialization)
+  const ensureCofheInitialized = async () => {
+    if (cofheInitialized) return true;
+    if (cofheInitializing) return false;
 
-        try {
-          // Create ethers provider from wagmi wallet client
-          setInitProgress(30);
-          const provider = new BrowserProvider(walletClient as any);
-          const signer = await provider.getSigner();
+    setCofheInitializing(true);
+    setInitProgress(10);
 
-          setInitProgress(50);
-          const result = await initializeNewCofhe(provider, signer);
+    try {
+      setInitProgress(30);
+      const provider = new BrowserProvider(walletClient as any);
+      const signer = await provider.getSigner();
 
-          setInitProgress(90);
+      setInitProgress(50);
+      const result = await initializeNewCofhe(provider, signer);
 
-          if (!result.success) {
-            setInitError(result.error instanceof Error ? result.error.message : 'Failed to initialize FHE encryption');
-          } else {
-            setInitProgress(100);
-            setCofheInitialized(true);
-          }
-        } catch (error) {
-          console.error('CoFHE initialization error:', error);
-          setInitError(error instanceof Error ? error.message : 'Unknown error');
-        } finally {
-          setCofheInitializing(false);
-        }
+      setInitProgress(90);
+
+      if (!result.success) {
+        setInitError(result.error instanceof Error ? result.error.message : 'Failed to initialize FHE encryption');
+        return false;
+      } else {
+        setInitProgress(100);
+        setCofheInitialized(true);
+        return true;
       }
-    };
-
-    initCofhe();
-  }, [isConnected, walletClient, cofheInitialized, cofheInitializing]);
+    } catch (error) {
+      console.error('CoFHE initialization error:', error);
+      setInitError(error instanceof Error ? error.message : 'Unknown error');
+      return false;
+    } finally {
+      setCofheInitializing(false);
+    }
+  };
 
   const handleVote = async () => {
     if (!selectedId) return;
@@ -96,9 +95,14 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
       alert('Please connect your wallet first');
       return;
     }
+
+    // Initialize CoFHE only when user actually votes
     if (!cofheInitialized) {
-      alert('FHE encryption is still initializing. Please wait...');
-      return;
+      const initialized = await ensureCofheInitialized();
+      if (!initialized) {
+        alert('Failed to initialize encryption. Please try again.');
+        return;
+      }
     }
 
     try {
@@ -157,7 +161,7 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
       )}
 
       {/* CoFHE Initialization Status */}
-      {isConnected && !cofheInitialized && !initError && (
+      {isConnected && cofheInitializing && !initError && (
         <div className="bg-blue-500/10 border-2 border-blue-500 rounded-2xl p-6 space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -186,7 +190,20 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
         </div>
       )}
 
-      {/* CoFHE Ready Status */}
+      {/* Ready to Vote Status (before initialization) */}
+      {isConnected && !cofheInitialized && !cofheInitializing && !hasVoted && !initError && (
+        <div className="bg-green-500/10 border-2 border-green-500 rounded-2xl p-4 flex items-center gap-4">
+          <div className="p-2 bg-green-500 rounded-full">
+            <ShieldIcon className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <p className="font-black text-green-600 uppercase tracking-wider text-xs">Ready to Vote</p>
+            <p className="text-xs text-primary/60">Encryption will initialize when you cast your vote</p>
+          </div>
+        </div>
+      )}
+
+      {/* CoFHE Ready Status (after initialization) */}
       {isConnected && cofheInitialized && !hasVoted && (
         <div className="bg-green-500/10 border-2 border-green-500 rounded-2xl p-4 flex items-center gap-4">
           <div className="p-2 bg-green-500 rounded-full">
