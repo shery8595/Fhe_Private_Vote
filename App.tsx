@@ -154,7 +154,6 @@ export default function App() {
               <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Fhenix Arbitrum Sepolia</span>
             </div>
             <ConnectButton showBalance={false} chainStatus="icon" />
-            <button onClick={() => switchView('debug')} className="text-[10px] font-black uppercase tracking-[0.2em] text-yellow-500 hover:text-white transition-all border border-yellow-500/50 px-3 py-1 rounded">DEBUG</button>
           </div>
         </nav>
       )}
