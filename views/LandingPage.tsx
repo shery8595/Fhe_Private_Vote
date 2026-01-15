@@ -100,7 +100,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         <p className="text-xl md:text-3xl text-primary/40 font-medium max-w-3xl mb-16 animate-fade-in-up stagger-3 leading-tight tracking-tight">
           Privacy isn't a feature—it's the core. Participate in decisions where 
-          <span className="text-primary font-bold"> local encryption </span> 
+          <span className="text-primary font-bold"> Fhenix Encryption </span> 
           ensures your vote is computed, but never seen.
         </p>
 
