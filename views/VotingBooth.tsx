@@ -263,7 +263,7 @@ export const VotingBooth: React.FC<VotingBoothProps> = ({ poll, onBack, onVoteSu
             <img
               src={poll.imageUrl}
               alt={poll.question}
-              className="w-full h-64 object-cover rounded-2xl"
+              className="w-full h-64 object-contain bg-bone rounded-2xl"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
