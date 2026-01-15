@@ -31,6 +31,8 @@ contract SecureVotePoll is AutomationCompatibleInterface {
         // Token-gating fields (address(0) = no gating)
         address tokenAddress;
         uint256 minimumTokenBalance;
+        // Optional poll image URL
+        string imageUrl;
     }
 
     // Poll ID => Poll data
@@ -71,6 +73,7 @@ contract SecureVotePoll is AutomationCompatibleInterface {
      * @param _optionLabels Names of voting options
      * @param _tokenAddress ERC20 token address for gating (address(0) for no gating)
      * @param _minimumTokenBalance Minimum token balance required to vote (ignored if _tokenAddress is address(0))
+     * @param _imageUrl Optional image URL for the poll (can be empty string)
      */
     function createPoll(
         string memory _question,
@@ -79,7 +82,8 @@ contract SecureVotePoll is AutomationCompatibleInterface {
         uint256 _durationInMinutes,
         string[] memory _optionLabels,
         address _tokenAddress,
-        uint256 _minimumTokenBalance
+        uint256 _minimumTokenBalance,
+        string memory _imageUrl
     ) external returns (uint256) {
         uint256 _optionCount = _optionLabels.length;
         require(_optionCount >= 2, "At least 2 options required");
@@ -98,7 +102,8 @@ contract SecureVotePoll is AutomationCompatibleInterface {
             optionCount: _optionCount,
             optionLabels: _optionLabels,
             tokenAddress: _tokenAddress,
-            minimumTokenBalance: _minimumTokenBalance
+            minimumTokenBalance: _minimumTokenBalance,
+            imageUrl: _imageUrl
         });
 
         // Initialize encrypted vote counts for each option to 0
@@ -246,7 +251,8 @@ contract SecureVotePoll is AutomationCompatibleInterface {
         uint256 totalVoteCount,
         string[] memory optionLabels,
         address tokenAddress,
-        uint256 minimumTokenBalance
+        uint256 minimumTokenBalance,
+        string memory imageUrl
     ) {
         Poll storage poll = polls[_pollId];
         return (
@@ -261,7 +267,8 @@ contract SecureVotePoll is AutomationCompatibleInterface {
             totalVotes[_pollId],
             poll.optionLabels,
             poll.tokenAddress,
-            poll.minimumTokenBalance
+            poll.minimumTokenBalance,
+            poll.imageUrl
         );
     }
 
