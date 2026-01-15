@@ -62,7 +62,8 @@ export const createPollOnChain = async (
     optionLabels: string[],
     provider: BrowserProvider,
     tokenAddress?: string,
-    minimumTokenBalance?: string
+    minimumTokenBalance?: string,
+    imageUrl?: string
 ): Promise<{ success: boolean; pollId?: number; txHash?: string; error?: string }> => {
     try {
         const signer = await provider.getSigner();
@@ -71,6 +72,7 @@ export const createPollOnChain = async (
         // Use address(0) for ungated polls
         const gatingAddress = tokenAddress && tokenAddress !== '' ? tokenAddress : '0x0000000000000000000000000000000000000000';
         const gatingBalance = minimumTokenBalance && minimumTokenBalance !== '' ? BigInt(minimumTokenBalance) : BigInt(0);
+        const pollImageUrl = imageUrl || ''; // Empty string if no image
 
         const tx = await contract.createPoll(
             question,
@@ -79,7 +81,8 @@ export const createPollOnChain = async (
             durationInMinutes,
             optionLabels,
             gatingAddress,
-            gatingBalance
+            gatingBalance,
+            pollImageUrl
         );
 
         console.log('📤 Create poll transaction sent:', tx.hash);
@@ -168,7 +171,8 @@ export const getPollFromContract = async (
             totalVotes,
             optionLabels,
             tokenAddress,
-            minimumTokenBalance
+            minimumTokenBalance,
+            imageUrl
         ] = await contract.getPoll(pollId);
 
         return {
@@ -183,7 +187,8 @@ export const getPollFromContract = async (
             totalVotes: Number(totalVotes),
             optionLabels: optionLabels || [],
             tokenAddress: tokenAddress || '0x0000000000000000000000000000000000000000',
-            minimumTokenBalance: minimumTokenBalance?.toString() || '0'
+            minimumTokenBalance: minimumTokenBalance?.toString() || '0',
+            imageUrl: imageUrl || ''
         };
     } catch (error) {
         console.error('Error fetching poll:', error);
