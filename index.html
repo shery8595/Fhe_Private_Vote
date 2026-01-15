@@ -1,18 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureVote FHE - Private On-Chain Voting</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1A1A1A', 
+                        primary: '#1A1A1A',
                         action: '#D20C19',  // Crimson Red
                         bone: '#F8FBEA',    // Cream Background
                         accent: '#1E293B',  // Slate Navy
@@ -60,41 +62,114 @@
         }
     </script>
     <style>
-        /* Base font size - smaller for better fit */
+        /* Base font size - reduced by 20% for more compact UI */
         html {
-            font-size: 14px; /* Base size for desktop */
+            font-size: 11.2px;
+            /* Was 14px, now 20% smaller */
         }
-        
+
         @media (max-width: 768px) {
             html {
-                font-size: 16px; /* Larger on mobile for readability */
+                font-size: 14px;
+                /* Slightly smaller on mobile too */
             }
         }
-        
+
         body {
             background-color: #F8FBEA;
             color: #1A1A1A;
             overflow-x: hidden;
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-            line-height: 1.5;
+            line-height: 1.4;
+            /* Tighter line height */
         }
-        
-        /* Scale down all text elements slightly */
-        h1 { font-size: 2.5rem; }
-        h2 { font-size: 2rem; }
-        h3 { font-size: 1.5rem; }
-        p { font-size: 1rem; }
-        
-        /* More compact spacing */
+
+        /* Scale down all text elements proportionally */
+        h1 {
+            font-size: 2rem;
+        }
+
+        /* Was 2.5rem */
+        h2 {
+            font-size: 1.6rem;
+        }
+
+        /* Was 2rem */
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        /* Was 1.5rem */
+        p {
+            font-size: 1rem;
+        }
+
+        /* More compact spacing globally */
         * {
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
+            /* Tighter letter spacing */
         }
-        
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
+
+        /* Reduce padding and margins */
+        .p-8 {
+            padding: 1.4rem !important;
+        }
+
+        .p-10 {
+            padding: 1.8rem !important;
+        }
+
+        .p-12 {
+            padding: 2.2rem !important;
+        }
+
+        .p-16 {
+            padding: 3rem !important;
+        }
+
+        .space-y-8>*+* {
+            margin-top: 1.4rem !important;
+        }
+
+        .space-y-10>*+* {
+            margin-top: 1.8rem !important;
+        }
+
+        .space-y-12>*+* {
+            margin-top: 2.2rem !important;
+        }
+
+        .gap-8 {
+            gap: 1.4rem !important;
+        }
+
+        .gap-10 {
+            gap: 1.8rem !important;
+        }
+
+        .gap-12 {
+            gap: 2.2rem !important;
+        }
+
+        .stagger-1 {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.3s;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.4s;
+        }
+
+        .stagger-5 {
+            animation-delay: 0.5s;
+        }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.6);
@@ -103,11 +178,26 @@
         }
 
         @keyframes pulse-shield {
-            0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(210, 12, 25, 0); }
-            50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 12px #D20C19); box-shadow: 0 0 20px 10px rgba(210, 12, 25, 0.1); }
-            100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(210, 12, 25, 0); }
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 0 0 rgba(210, 12, 25, 0);
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                filter: drop-shadow(0 0 12px #D20C19);
+                box-shadow: 0 0 20px 10px rgba(210, 12, 25, 0.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 0 0 rgba(210, 12, 25, 0);
+            }
         }
-        
+
         .pulse-shield {
             animation: pulse-shield 2s infinite ease-in-out;
         }
@@ -124,23 +214,32 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #F8FBEA;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #1E293B;
             border-radius: 10px;
         }
+
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
 
         @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
+
         .animate-shimmer {
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
             background-size: 200% 100%;
             animation: shimmer 2s infinite;
         }
@@ -158,7 +257,7 @@
             animation: scan 10s linear infinite;
         }
     </style>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "recharts": "https://esm.sh/recharts@^3.6.0",
@@ -170,10 +269,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/index.css">
 </head>
+
 <body>
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
