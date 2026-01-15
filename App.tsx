@@ -30,11 +30,18 @@ export default function App() {
   const { data: walletClient } = useWalletClient();
 
   const fetchPolls = async () => {
-    if (!walletClient) return;
-
     setIsLoading(true);
     try {
-      const provider = new BrowserProvider(walletClient as any);
+      // Use wallet provider if available, otherwise use public RPC
+      let provider;
+      if (walletClient) {
+        provider = new BrowserProvider(walletClient as any);
+      } else {
+        // Public Arbitrum Sepolia RPC endpoint
+        const { JsonRpcProvider } = await import('ethers');
+        provider = new JsonRpcProvider('https://sepolia-rollup.arbitrum.io/rpc');
+      }
+
       const count = await getPollCount(provider);
 
       const fetchedPolls: Poll[] = [];
@@ -81,9 +88,8 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    if (isConnected && walletClient) {
-      fetchPolls();
-    }
+    // Fetch polls on mount and when wallet connects
+    fetchPolls();
   }, [isConnected, walletClient]);
 
   const activePoll = polls.find(p => p.id === activePollId);
