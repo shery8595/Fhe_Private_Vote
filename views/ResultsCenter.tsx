@@ -359,6 +359,20 @@ export const ResultsCenter: React.FC<ResultsCenterProps> = ({ poll, onBack, onRe
               </h1>
             </header>
 
+            {/* Poll Image */}
+            {poll.imageUrl && (
+              <div className="-mx-10 md:-mx-14 -mt-4 mb-12">
+                <img
+                  src={poll.imageUrl}
+                  alt={poll.question}
+                  className="w-full h-72 object-cover rounded-3xl"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+
             {winner && data.length > 0 && (
               <div className="mb-12 p-1 bg-action rounded-[32px] animate-scale-in">
                 <div className="bg-white rounded-[30px] p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-white/10 hover:shadow-inner transition-all">
