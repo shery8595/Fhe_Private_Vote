@@ -23,6 +23,7 @@ export interface Poll {
   creator: string;
   isActive: boolean;
   transactionHash?: string;
+  imageUrl?: string; // Optional poll image URL
 }
 
 export interface EncryptionState {
