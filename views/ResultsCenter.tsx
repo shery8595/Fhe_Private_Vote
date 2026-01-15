@@ -75,16 +75,20 @@ export const ResultsCenter: React.FC<ResultsCenterProps> = ({ poll, onBack, onRe
   };
 
   const fetchDecryptedResults = async (retryCount = 0) => {
-    if (!walletClient) {
-      displayMockResults();
-      return;
-    }
-
     setIsUnsealing(true);
     if (retryCount === 0) addLog("🔐 Fetching decrypted results from contract...");
 
     try {
-      const provider = new BrowserProvider(walletClient as any);
+      // Use wallet provider if available, otherwise use public RPC
+      let provider;
+      if (walletClient) {
+        provider = new BrowserProvider(walletClient as any);
+      } else {
+        // Public Arbitrum Sepolia RPC endpoint
+        const { JsonRpcProvider } = await import('ethers');
+        provider = new JsonRpcProvider('https://sepolia-rollup.arbitrum.io/rpc');
+      }
+
       const pollId = parseInt(poll.id);
       const votes: number[] = [];
       let allDecrypted = true;
