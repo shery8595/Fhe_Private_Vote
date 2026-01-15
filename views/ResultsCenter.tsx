@@ -365,7 +365,7 @@ export const ResultsCenter: React.FC<ResultsCenterProps> = ({ poll, onBack, onRe
                 <img
                   src={poll.imageUrl}
                   alt={poll.question}
-                  className="w-full h-72 object-cover rounded-3xl"
+                  className="w-full h-72 object-contain bg-bone rounded-3xl"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
