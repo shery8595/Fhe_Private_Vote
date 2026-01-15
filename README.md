@@ -1,3 +1,4 @@
+<div align="center">
 # SecureVote-FHE 🗳️🔒
 
 **Privacy-Preserving Decentralized Voting Platform with Fully Homomorphic Encryption**
