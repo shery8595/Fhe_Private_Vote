@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Poll, PollStatus } from './types';
@@ -72,6 +73,7 @@ export default function App() {
             totalVotes: pollData.totalVotes,
             creator: pollData.creator,
             isActive: pollData.isActive,
+            imageUrl: pollData.imageUrl,
             options: Array.from({ length: pollData.optionCount }, (_, idx) => ({
               id: idx.toString(),
               label: pollData.optionLabels[idx] || `Option ${idx + 1}`
