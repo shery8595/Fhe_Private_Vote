@@ -5,7 +5,6 @@ import { BrowserProvider } from 'ethers';
 import { Poll, PollOption, PollStatus } from '../types';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 import confetti from 'canvas-confetti';
-import { initializeNewCofhe, isNewCofheReady } from '../services/newCofhe';
 import { CONTRACT_CONFIG } from '../lib/contract';
 import { Contract } from 'ethers';
 import { CONTRACT_ABI } from '../lib/contract';
@@ -24,7 +23,6 @@ export const ResultsCenter: React.FC<ResultsCenterProps> = ({ poll, onBack, onRe
   const [logs, setLogs] = useState<string[]>([]);
   const [showCharts, setShowCharts] = useState(false);
   const [isUnsealing, setIsUnsealing] = useState(false);
-  const [cofheInitialized, setCofheInitialized] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
 
@@ -33,27 +31,6 @@ export const ResultsCenter: React.FC<ResultsCenterProps> = ({ poll, onBack, onRe
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-
-  // Initialize CoFHE when component mounts
-  useEffect(() => {
-    const initCofhe = async () => {
-      if (isConnected && walletClient && !cofheInitialized) {
-        try {
-          const provider = new BrowserProvider(walletClient as any);
-          const signer = await provider.getSigner();
-          const result = await initializeNewCofhe(provider, signer);
-          if (result.success) {
-            setCofheInitialized(true);
-            addLog("✅ FHE encryption initialized");
-          }
-        } catch (error) {
-          console.error('CoFHE init error:', error);
-          addLog("⚠️ FHE initialization failed, using contract decryption");
-        }
-      }
-    };
-    initCofhe();
-  }, [isConnected, walletClient, cofheInitialized]);
 
   useEffect(() => {
     // Sync local state if prop changes
