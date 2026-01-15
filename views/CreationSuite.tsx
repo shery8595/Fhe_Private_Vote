@@ -216,19 +216,6 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                 />
               </div>
 
-              <button
-                disabled={!formData.question || isGenerating}
-                onClick={generateWithAI}
-                className="w-full py-5 bg-accent text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-4 hover:bg-action transition-all disabled:opacity-30 group"
-              >
-                {isGenerating ? <LoadingSpinner className="w-6 h-6" /> : (
-                  <>
-                    <span className="text-action group-hover:text-white transition-colors">✨</span>
-                    Gemini Smart Assist
-                  </>
-                )}
-              </button>
-
               <div className="space-y-3">
                 <label className="text-xs font-black uppercase tracking-[0.3em] text-primary/40 ml-1">Governance Context</label>
                 <textarea
