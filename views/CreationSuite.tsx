@@ -36,7 +36,8 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
     durationMinutes: 3, // Default to 3 min for testing
     tokenGatingEnabled: false,
     tokenAddress: '',
-    minimumTokenBalance: ''
+    minimumTokenBalance: '',
+    imageUrl: '' // Optional poll image URL
   });
 
   const applyTemplate = (template: typeof POLL_TEMPLATES[0]) => {
@@ -48,7 +49,8 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
       durationMinutes: template.suggestedDuration,
       tokenGatingEnabled: template.tokenGatingEnabled || false,
       tokenAddress: template.tokenAddress || '',
-      minimumTokenBalance: template.minimumTokenBalance || ''
+      minimumTokenBalance: template.minimumTokenBalance || '',
+      imageUrl: '' // Reset image URL when applying template
     });
     setShowTemplates(false);
   };
@@ -118,7 +120,8 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
         formData.options,
         provider,
         formData.tokenGatingEnabled ? formData.tokenAddress : undefined,
-        formData.tokenGatingEnabled ? formData.minimumTokenBalance : undefined
+        formData.tokenGatingEnabled ? formData.minimumTokenBalance : undefined,
+        formData.imageUrl || undefined
       );
 
       if (result.success) {
@@ -235,6 +238,106 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                   onChange={(e) => setFormData(f => ({ ...f, description: e.target.value }))}
                   className="w-full bg-bone border-4 border-accent/5 rounded-3xl px-8 py-6 focus:outline-none focus:border-action transition-all resize-none text-lg font-medium shadow-inner"
                 />
+              </div>
+
+              {/* Image Upload (Drag & Drop) */}
+              <div className="space-y-3">
+                <label className="text-xs font-black uppercase tracking-[0.3em] text-primary/40 ml-1">Poll Image (Optional)</label>
+
+                <div
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                      setIsGenerating(true);
+                      try {
+                        const formData = new FormData();
+                        formData.append('image', file);
+
+                        const response = await fetch('https://api.imgur.com/3/image', {
+                          method: 'POST',
+                          headers: {
+                            'Authorization': 'Client-ID 546c25a59c58ad7'
+                          },
+                          body: formData
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                          setFormData(f => ({ ...f, imageUrl: data.data.link }));
+                        }
+                      } catch (error) {
+                        console.error('Upload error:', error);
+                      } finally {
+                        setIsGenerating(false);
+                      }
+                    }
+                  }}
+                  className="border-2 border-dashed border-accent/20 rounded-3xl p-8 text-center hover:border-action transition-all cursor-pointer bg-bone"
+                >
+                  {!formData.imageUrl ? (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setIsGenerating(true);
+                            try {
+                              const formData = new FormData();
+                              formData.append('image', file);
+
+                              const response = await fetch('https://api.imgur.com/3/image', {
+                                method: 'POST',
+                                headers: {
+                                  'Authorization': 'Client-ID 546c25a59c58ad7'
+                                },
+                                body: formData
+                              });
+
+                              const data = await response.json();
+                              if (data.success) {
+                                setFormData(f => ({ ...f, imageUrl: data.data.link }));
+                              }
+                            } catch (error) {
+                              console.error('Upload error:', error);
+                            } finally {
+                              setIsGenerating(false);
+                            }
+                          }
+                        }}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <label htmlFor="image-upload" className="cursor-pointer">
+                        <div className="text-5xl mb-4">📸</div>
+                        <p className="text-sm font-black text-primary mb-2">Drag & drop image here</p>
+                        <p className="text-xs text-primary/40">or click to browse</p>
+                        {isGenerating && <p className="text-xs text-action mt-2 animate-pulse">Uploading...</p>}
+                      </label>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Poll image"
+                        className="max-w-full max-h-64 mx-auto rounded-2xl"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setFormData(f => ({ ...f, imageUrl: '' }));
+                        }}
+                        className="absolute top-2 right-2 bg-action text-white p-2 rounded-full hover:bg-primary transition-all"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-primary/40 italic">Upload an image to make your poll more engaging</p>
               </div>
 
               <button
