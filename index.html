@@ -60,11 +60,34 @@
         }
     </script>
     <style>
+        /* Base font size - smaller for better fit */
+        html {
+            font-size: 14px; /* Base size for desktop */
+        }
+        
+        @media (max-width: 768px) {
+            html {
+                font-size: 16px; /* Larger on mobile for readability */
+            }
+        }
+        
         body {
             background-color: #F8FBEA;
             color: #1A1A1A;
             overflow-x: hidden;
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            line-height: 1.5;
+        }
+        
+        /* Scale down all text elements slightly */
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        p { font-size: 1rem; }
+        
+        /* More compact spacing */
+        * {
+            letter-spacing: -0.01em;
         }
         
         .stagger-1 { animation-delay: 0.1s; }
