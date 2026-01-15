@@ -1,0 +1,6 @@
+
+{
+  "name": "SecureVote FHE",
+  "description": "A high-privacy voting platform leveraging Fully Homomorphic Encryption (FHE) for confidential on-chain governance.",
+  "requestFramePermissions": []
+}
