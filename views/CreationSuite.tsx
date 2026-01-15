@@ -240,7 +240,7 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                 />
               </div>
 
-              {/* Image Upload (Drag & Drop) */}
+              {/* Image Upload (Drag & Drop with Base64) */}
               <div className="space-y-3">
                 <label className="text-xs font-black uppercase tracking-[0.3em] text-primary/40 ml-1">Poll Image (Optional)</label>
 
@@ -252,24 +252,20 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                     if (file && file.type.startsWith('image/')) {
                       setIsGenerating(true);
                       try {
-                        const formData = new FormData();
-                        formData.append('image', file);
-
-                        const response = await fetch('https://api.imgur.com/3/image', {
-                          method: 'POST',
-                          headers: {
-                            'Authorization': 'Client-ID 546c25a59c58ad7'
-                          },
-                          body: formData
-                        });
-
-                        const data = await response.json();
-                        if (data.success) {
-                          setFormData(f => ({ ...f, imageUrl: data.data.link }));
-                        }
+                        // Convert to base64
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          const base64String = reader.result as string;
+                          setFormData(f => ({ ...f, imageUrl: base64String }));
+                          setIsGenerating(false);
+                        };
+                        reader.onerror = () => {
+                          console.error('Failed to read file');
+                          setIsGenerating(false);
+                        };
+                        reader.readAsDataURL(file);
                       } catch (error) {
                         console.error('Upload error:', error);
-                      } finally {
                         setIsGenerating(false);
                       }
                     }
@@ -286,24 +282,20 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                           if (file) {
                             setIsGenerating(true);
                             try {
-                              const formData = new FormData();
-                              formData.append('image', file);
-
-                              const response = await fetch('https://api.imgur.com/3/image', {
-                                method: 'POST',
-                                headers: {
-                                  'Authorization': 'Client-ID 546c25a59c58ad7'
-                                },
-                                body: formData
-                              });
-
-                              const data = await response.json();
-                              if (data.success) {
-                                setFormData(f => ({ ...f, imageUrl: data.data.link }));
-                              }
+                              // Convert to base64
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const base64String = reader.result as string;
+                                setFormData(f => ({ ...f, imageUrl: base64String }));
+                                setIsGenerating(false);
+                              };
+                              reader.onerror = () => {
+                                console.error('Failed to read file');
+                                setIsGenerating(false);
+                              };
+                              reader.readAsDataURL(file);
                             } catch (error) {
                               console.error('Upload error:', error);
-                            } finally {
                               setIsGenerating(false);
                             }
                           }
@@ -315,7 +307,7 @@ export const CreationSuite: React.FC<CreationSuiteProps> = ({ onBack, onCreated 
                         <div className="text-5xl mb-4">📸</div>
                         <p className="text-sm font-black text-primary mb-2">Drag & drop image here</p>
                         <p className="text-xs text-primary/40">or click to browse</p>
-                        {isGenerating && <p className="text-xs text-action mt-2 animate-pulse">Uploading...</p>}
+                        {isGenerating && <p className="text-xs text-action mt-2 animate-pulse">Processing...</p>}
                       </label>
                     </div>
                   ) : (
