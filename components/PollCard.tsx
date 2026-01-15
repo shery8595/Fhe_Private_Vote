@@ -27,17 +27,30 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onView, index = 0 }) =
         </span>
       </div>
 
-      {/* Poll Image */}
-      {poll.imageUrl && (
+      {/* Poll Image or Decorative Placeholder */}
+      {poll.imageUrl ? (
         <div className="mb-6 -mx-8 -mt-2">
           <img
             src={poll.imageUrl}
             alt={poll.question}
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-contain bg-bone rounded-2xl"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
+        </div>
+      ) : (
+        <div className="mb-6 -mx-8 -mt-2 h-48 bg-gradient-to-br from-accent/5 via-action/5 to-primary/5 rounded-2xl flex items-center justify-center border-2 border-dashed border-accent/10 group-hover:border-action/20 transition-all">
+          <div className="text-center">
+            <div className="text-6xl mb-3 opacity-20 group-hover:opacity-30 transition-opacity">
+              {poll.category === 'Finance' ? '💰' :
+                poll.category === 'Governance' ? '🏛️' :
+                  poll.category === 'Technology' ? '⚡' :
+                    poll.category === 'Community' ? '👥' :
+                      poll.category === 'Protocol' ? '🔧' : '📊'}
+            </div>
+            <p className="text-xs font-black uppercase tracking-widest text-primary/20">{poll.category}</p>
+          </div>
         </div>
       )}
 
